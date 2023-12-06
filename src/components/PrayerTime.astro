@@ -1,0 +1,53 @@
+---
+import { getPrayerTimes } from '../lib/utils';
+import Card from "./Card/index.astro";
+
+let prayerData =  getPrayerTimes(51,71)
+const prayerTimes = Object.entries(prayerData);
+
+
+---
+
+<script>
+  import { onMount } from 'solid-js';
+
+  import { createGeolocationWatcher } from '@solid-primitives/geolocation';
+  import { getPrayerTimes } from '../lib/utils';
+
+export async function getLocationAndPrayerTime() {
+  try {
+    const watcher = createGeolocationWatcher(true);
+    const location = watcher.location; 
+
+    if (location) {
+      const prayerTimes = getPrayerTimes(location.latitude, location.longitude);
+      return prayerTimes; 
+    } else {
+      console.error('Get location error');
+      return null; 
+    }
+  } catch (error) {
+    console.error('Get location error:', error);
+    return null; 
+  }
+}
+onMount(() => {
+  getLocationAndPrayerTime();
+  
+  });
+
+</script>
+
+<Card colSpan="md:col-span-1" rowSpan="md:row-span-3" title="Prayer times">
+  <div class="flex flex-col h-full justify-between">
+    <div class="flex flex-col gap-2 mt-2">
+      {prayerTimes.map((key) => (
+        <div class="flex items-center justify-between w-full border rounded-md border-darkslate-100 px-2 py-1">
+          {key[0]}
+          <span class="text-sm font-light">{key[1]}</span> 
+        </div>
+      ))}
+    </div>
+    <div class="flex h-full items-start mt-2">(in development)</div>
+  </div>
+</Card>

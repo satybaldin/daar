@@ -1,0 +1,83 @@
+---
+import { getCurrentTime, formatTime } from "../lib/helpers";
+import Card from "./Card/index.astro";
+
+
+
+
+---
+
+<script >
+  import { onCleanup, onMount } from "solid-js";
+  import { formatTime } from "../lib/helpers";
+
+  let interval: ReturnType<typeof setInterval>;
+
+    
+    function handleSearch() {
+    const searchInput = document.getElementById("searchInput");
+    if (searchInput instanceof HTMLInputElement && searchInput.value.trim() !== "") {
+      const searchQuery = encodeURIComponent(searchInput.value);
+      const searchUrl = `https://www.google.com/search?q=${searchQuery}`;
+      window.open(searchUrl, "_blank");
+    }
+  }
+
+  const searchButton = document.getElementById("searchButton");
+  const searchInput = document.getElementById("searchInput");
+
+  if (searchButton instanceof HTMLElement && searchInput instanceof HTMLElement) {
+    searchButton.addEventListener("click", handleSearch);
+    searchInput.addEventListener("keypress", function (event) {
+      if (event.key === "Enter") {
+        handleSearch();
+      }
+    });
+  }
+function updateClock() {
+
+    const timeDisplay = document.getElementById("timeDisplay");
+    const now = new Date();
+
+    if (timeDisplay) {
+      timeDisplay.textContent = formatTime(now);
+      timeDisplay.setAttribute("datetime", now.toISOString());
+    }
+  }
+
+  onMount(() => {
+    interval = setInterval(updateClock, 1000);
+  });
+
+  onCleanup(() => {
+    clearInterval(interval);
+  });
+
+
+
+</script>
+
+<Card class="lg:col-span-2 md:row-span-1" title="Time zone">
+  <div class="flex flex-col xl:flex-row max-h-10">
+    <time datetime="" id="timeDisplay" class="text-2xl xl:text-3xl w-50 xl:w-100 h-[calc(100%-28px)] font-serif">
+      {formatTime(getCurrentTime())}
+    </time>
+  
+  </div>
+  <div class="flex flex-row mt-3 w-full">
+    <input 
+      id="searchInput" 
+      placeholder="Google Search" 
+      class="h-10 bg-darkslate-700 border border-darkslate-100 w-full rounded-l-2 focus:outline-none pl-2 sm:pl-4 flex items-center"
+    ></input>
+    <button 
+      id="searchButton" 
+      class="bg-darkslate-400 border border-darkslate-100 w-auto rounded-r-2 px-6 flex items-center justify-center"
+    >
+      GO
+    </button>
+  </div>
+  
+  
+</Card>
+
