@@ -54,4 +54,4 @@ or
 ## Authors ❤️
 
 - Gianmarco - https://github.com/Ladvace
-- Gianmarco - https://github.com/satybaldin
+- Satybaldin - https://github.com/satybaldin
